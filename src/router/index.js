@@ -6,7 +6,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes:[
         {path: '/', component: Home },
-        {path:'/preview', component: ()=> import('@/pages/preview.vue')}
+        {path:'/domain/:url', component: ()=> import('@/pages/domain.vue')}
     ]
 })
 

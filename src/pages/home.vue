@@ -4,17 +4,15 @@
             <h1 class="text-h4 text-sm-h2 font-weight-black">PhishGuard</h1>
             <v-icon class="text-h4 text-sm-h2">mdi-shield-check</v-icon>
         </div>
-        <p class="mx-auto mb-5 text-sm-h6 w-sm-75 text-center">Stay Safe Online – Instantly Detect Malicious and Phishing
+        <p class="mx-auto mb-5 text-sm-h6 w-sm-75 text-center">Stay Safe Online – Instantly Detect Malicious and
+            Phishing
             Links</p>
         <v-card class="py-5 px-2 pa-sm-7 w-100 w-md-75">
             <!-- <v-card-item> -->
-                <v-card-title class="text-center mb-2 text-wrap text-subtitle-1 text-sm-h6">Check If a URL is Safe or a Phishing
-                    Trap</v-card-title>
-                <v-form v-model="form" @submit.prevent="scanUrl" class="d-flex align-center mb-4" style="height: 3em;">
-                    <v-text-field v-model="url" :rules="[urlValidation]" class="h-100"
-                        style='border: 0.3px solid #b4c3d9 !important;' placeholder="url.com"></v-text-field>
-                    <v-btn type="submit" :disabled="!isFormValid" class="h-100 rounded-0 bg-primary">Scan</v-btn>
-                </v-form>
+            <v-card-title class="text-center mb-2 text-wrap text-subtitle-1 text-sm-h6">Check If a URL is Safe or a
+                Phishing
+                Trap</v-card-title>
+            <search-bar></search-bar>
             <!-- </v-card-item> -->
         </v-card>
     </v-main>
@@ -24,14 +22,14 @@
             Should Avoid</h2>
         <v-row class="gap">
             <v-col cols="12" sm="" class="bg-surface pa-3 pa-sm-5 text-justify rounded-lg">
-                <v-icon color="red-lighten-3" class="text-h5 text-sm-h4" >mdi-web</v-icon>
+                <v-icon color="red-lighten-3" class="text-h5 text-sm-h4">mdi-web</v-icon>
                 <p class="mt-5 font-weight-black text-subtitle-1 text-sm-h6">Deceptive Websites</p>
                 <p class="mt-5">These are fake websites designed to look like legitimate ones. They trick users into
                     entering sensitive information like passwords and credit card details. Always verify the domain name
                     before entering any credentials.</p>
             </v-col>
             <v-col cols="12" sm="" class="bg-surface pa-3 pa-sm-5 text-justify rounded-lg">
-                <v-icon color="red-lighten-3" class="text-h5 text-sm-h4" >mdi-link-variant-remove</v-icon>
+                <v-icon color="red-lighten-3" class="text-h5 text-sm-h4">mdi-link-variant-remove</v-icon>
                 <p class="mt-5 font-weight-black text-subtitle-1 text-sm-h6">Suspicious Shortened Links</p>
                 <p class="mt-5">URL shorteners hide the real destination of a link, making it easy for cybercriminals to
                     disguise malicious sites. Use URL preview tools to check where the link leads before clicking.</p>
@@ -55,7 +53,7 @@
         </v-row>
         <v-row class="gap my-10">
             <v-col cols="12" sm="" class="bg-surface pa-3 pa-sm-5 text-justify rounded-lg">
-                <v-icon color="red-lighten-3" class="text-h5 text-sm-h4" >mdi-file-alert-outline</v-icon>
+                <v-icon color="red-lighten-3" class="text-h5 text-sm-h4">mdi-file-alert-outline</v-icon>
                 <p class="mt-5 font-weight-black text-subtitle-1 text-sm-h6">Phishing Links</p>
                 <p class="mt-5">Phishing links aim to steal your personal and financial information. These links are
                     often
@@ -63,7 +61,7 @@
                     never provide personal information through untrusted links.</p>
             </v-col>
             <v-col cols="12" sm="" class="bg-surface pa-3 pa-sm-5 text-justify rounded-lg">
-                <v-icon color="red-lighten-3" class="text-h5 text-sm-h4" >mdi-virus</v-icon>
+                <v-icon color="red-lighten-3" class="text-h5 text-sm-h4">mdi-virus</v-icon>
                 <p class="mt-5 font-weight-black text-subtitle-1 text-sm-h6">Virus and Trojan Links</p>
                 <p class="mt-5">These links often lead to downloads that infect your device with malicious software like
                     viruses or trojans. Be cautious when clicking links from unknown sources, especially those that
@@ -73,74 +71,56 @@
         </v-row>
     </v-main>
     <v-main class="mt-0 mt-sm-15 bg-surface pa-3 pa-sm-5 text-justify pt-15">
-        <div class="w-100 layout mx-auto mb-15">
+        <div class="w-100 layout mx-auto mb-8">
             <h1 class="text-center text-h6 text-sm-h4 font-weight-black mb-5 mb-sm-10">How to Stay One Step Ahead of
                 Cyber Threats</h1>
             <ul class="custom-bullets">
                 <li>
                     <span>🔹</span>
-                    <span><strong>Use PhishGuard’s URL Detector Before Clicking:</strong> Never trust a link blindly!
-                        Cybercriminals often disguise malicious links to look like legitimate ones, making it difficult
-                        to spot phishing attempts. Before clicking on any link—especially those sent via email, SMS, or
-                        social media—take a moment to verify its authenticity. Phishing links often mimic trusted
-                        websites, tricking users into providing sensitive information. By using our PhishGuard URL
-                        Detector, you can instantly analyze the link’s safety and determine whether it’s a phishing trap
-                        or a legitimate website. Always double-check shortened URLs, as they can hide dangerous
-                        destinations. When in doubt, verify directly from the official website rather than clicking on a
-                        suspicious link.</span>
+                    <span><strong>Use PhishGuard’s URL Detector Before Clicking:</strong> Don’t trust links blindly.
+                        Phishing links often look legit but are dangerous. Use PhishGuard to check if a link is safe
+                        before clicking, especially from emails or social media.</span>
                 </li>
                 <li>
                     <span>🔹</span>
-                    <span><strong>Look for HTTPS Encryption:</strong> Secure websites use <strong>"HTTPS"</strong>
-                        instead of <strong>"HTTP"</strong> at the beginning of their URL. The additional
-                        <strong>"S"</strong> stands for "Secure" and indicates that the website encrypts your data
-                        during transmission. Websites without HTTPS may expose your personal information, making it
-                        vulnerable to interception by hackers. However, it’s important to note that <strong>HTTPS alone
-                            doesn’t guarantee safety—</strong> some phishing websites also use HTTPS to appear
-                        legitimate. Always verify the domain name carefully, looking for small misspellings (e.g.,
-                        <strong>faceboook.com</strong> instead of <strong>facebook.com</strong>) before entering any
-                        credentials.</span>
+                    <span><strong>Look for HTTPS Encryption:</strong> Secure sites use <strong>HTTPS</strong>. The "S"
+                        means your data is encrypted. But HTTPS alone isn’t enough—check for misspelled domains like
+                        <strong>faceboook.com</strong> before entering info.</span>
                 </li>
                 <li>
                     <span>🔹</span>
-                    <span><strong>Enable Multi-Factor Authentication (MFA):</strong> Even if hackers manage to steal
-                        your login credentials, enabling Multi-Factor Authentication <strong>(MFA)</strong> provides an
-                        additional layer of security to prevent unauthorized access. MFA requires a second form of
-                        verification, <strong>such as a one-time code sent to your phone, a fingerprint scan, or an
-                            authentication app</strong>. This means that even if your password is compromised,
-                        cybercriminals <strong>still won’t be able to access your account</strong> without the second
-                        verification step. Enabling MFA is one of the most effective ways to protect your email,
-                        banking, and social media accounts from unauthorized access.</span>
+                    <span><strong>Enable Multi-Factor Authentication (MFA):</strong> MFA adds extra security. Even if
+                        your password is stolen, a second verification step helps block unauthorized access to your
+                        accounts.</span>
                 </li>
                 <li>
                     <span>🔹</span>
-                    <span><strong>Beware of Urgent Messages:</strong> Cybercriminals often use <strong>scare tactics and
-                            urgency</strong> to pressure victims into making quick decisions without thinking. These
-                        messages may claim that <strong>your bank account has been locked, your email password needs
-                            urgent resetting, or your social media account is about to be deleted</strong>. Scammers
-                        rely on fear and panic to manipulate users into clicking malicious links. If you receive an
-                        urgent message asking you to take immediate action, <strong>pause and verify</strong> before
-                        clicking any links. Always go to the official website and contact customer support directly to
-                        confirm whether the alert is genuine. Never trust unexpected messages from unknown senders,
-                        especially if they request personal or financial information.</span>
+                    <span><strong>Beware of Urgent Messages:</strong> Scammers use urgency to trick you. Don’t
+                        rush—verify claims like “account locked” by visiting the official site or contacting support
+                        directly.</span>
                 </li>
                 <li>
                     <span>🔹</span>
-                    <span><strong>Keep Your Software Updated:</strong> Keeping your <strong>web browser, antivirus
-                            software, and operating system up to date</strong> is crucial for protecting against cyber
-                        threats. Software updates often include security patches that fix vulnerabilities
-                        <strong>exploited by hackers</strong> to install malware, steal data, or take control of your
-                        device. <strong>Delaying updates leaves your system exposed to cyberattacks</strong>. Always
-                        enable <strong>automatic updates</strong> for your operating system, browsers, and security
-                        software to ensure you’re protected against the latest threats. Additionally, be cautious when
-                        downloading software—only install apps from official sources like the <strong>Apple App Store,
-                            Google Play Store, or the software vendor’s official website.</strong></span>
+                    <span><strong>Keep Your Software Updated:</strong> Updates fix security holes hackers exploit.
+                        Always enable auto-updates and download apps only from trusted sources like app stores or
+                        official websites.</span>
                 </li>
-                <div class="mt-5 mb-15">
-                    By following these guidelines and using PhishGuard’s URL Detector, you can minimize the risk of
-                    falling victim to phishing attacks and other cyber threats.
-                </div>
             </ul>
+
+        </div>
+        <div class="w-100 layout mx-auto mb-15">
+            <div class="font-weight-black text-sm-h5">Disclaimer: </div>
+            <p>
+                Evaluate every submitted URL. The results and recommendations provided are based on real-time
+                scrutiny and
+                data-driven models.
+                While PhishGuard aims to enhance user safety, users are advised to exercise caution and verify
+                senders
+                independently before interacting with any links.
+                ⚠️ PhishGuard will not be held liable for any loss, damage, or harm resulting from the use of
+                links analyzed
+                by this platform, including those marked as safe. Always prioritize secure browsing practices.
+            </p>
         </div>
         <div class="d-flex w-100 layout mx-auto align-center justify-space-between ga-5 mt-15 mb-5">
             <hr class="w-25">
@@ -151,41 +131,7 @@
 </template>
 
 <script setup>
-import axios from 'axios';
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
-const form = ref(false)
-const router = useRouter()
-const url = ref('')
-
-const urlValidation = (value) => {
-    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
-    if (!value) return 'URL is required';
-    if (!urlPattern.test(value)) return 'Please enter a valid URL';
-    return true
-}
-
-const isFormValid = computed(() => {
-    return url.value && urlValidation(url.value) === true
-})
-
-const scanUrl = async() => {
-    console.log(form.value);
-
-    if (!form.value) return;
-    try {
-        const response = await axios.post('https://alaminapi.pythonanywhere.com/Get_Data', {url: url.value}, {
-                headers:{
-                    'Content-Type': 'multipart/form-data'
-                }
-        })
-        console.log(response.data);
-        
-    } catch (error) {
-        console.log(error);
-        
-    }
-}
+import searchBar from '@/components/searchBar.vue';
 </script>
 
 <style scoped>
@@ -235,9 +181,10 @@ const scanUrl = async() => {
     .bg {
         background: linear-gradient(180deg, #0A192F 70%, white 5%);
     }
+
     .v-card {
-    box-shadow: 0px 0px 5px #b4c3d9;
-}
+        box-shadow: 0px 0px 5px #b4c3d9;
+    }
 }
 
 @media (max-width:380px) {
