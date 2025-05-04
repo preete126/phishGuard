@@ -23,8 +23,18 @@ const { result, url, navigatedFromScan, loading } = storeToRefs(messages)
 
 const urlValidation = (value) => {
     if (!value) return 'URL is required';
-    if (!value.endsWith('.com')) return "URL missing '.com'";
-    return true
+    try {
+        const sanitized = sanitizeURL(value);
+        const parsed = new URL(sanitized);
+        const hostnameParts = parsed.hostname.split('.');
+        if (hostnameParts.length < 2 || hostnameParts[hostnameParts.length - 1].length < 2) {
+            return 'URL must have a valid domain extension (e.g., .com, .net)';
+        }
+
+        return true;
+    } catch (e) {
+        return 'Invalid URL format';
+    }
 }
 
 const isFormValid = computed(() => {
@@ -32,17 +42,21 @@ const isFormValid = computed(() => {
 })
 
 const sanitizeURL = (input) => {
-    if (input.startsWith('http' || input.startsWith('https'))) {
-        return input;
+    let sanitized = input.trim();
+    if (!/^https?:\/\//i.test(sanitized)) {
+        sanitized = 'http://' + sanitized;
     }
-    return 'http://' + input;
+    if (sanitized.endsWith('/')) {
+        sanitized = sanitized.slice(0, -1);
+    }
+
+    return sanitized;
 }
 
 const scanAnalysis = async (finalURL) => {
 
     try {
         loading.value = true
-        // result.value = undefined
         const response = await axios.post('https://alaminapi.pythonanywhere.com/Get_Data', { url: finalURL }, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -50,9 +64,8 @@ const scanAnalysis = async (finalURL) => {
         })
         console.log(response.data);
         result.value = response.data;
-        const domain = new URL(finalURL).hostname
         navigatedFromScan.value = true;
-        router.push(`/domain/${domain}`);
+        router.push(`/domain/${encodeURIComponent(finalURL)}`);
     } catch (error) {
         console.log(error);
         if (error.status === 500) {
@@ -71,30 +84,29 @@ onMounted(() => {
 })
 watch(() => route.fullPath, (newpath) => {
     const segments = newpath.split('/');
-    console.log(segments, url.value, route.fullPath);
-    if (segments.includes('domain')) {
-        const domainIndex = segments.indexOf('domain');
-        const scannedDomain = segments[domainIndex + 1];
+    const domainIndex = segments.indexOf('domain');
 
-        if (scannedDomain) {
-            if (navigatedFromScan.value) {
-                navigatedFromScan.value = false;
-                return;
-            }
-            const finalURL = sanitizeURL(scannedDomain);
-            url.value = finalURL
-            console.log('watcher update url to:', url.value);
-            scanAnalysis(finalURL)
+    if (domainIndex !== -1 && segments.length > domainIndex + 1) {
+        const scannedDomain = decodeURIComponent(segments.slice(domainIndex + 1).join('/'));
+
+        if (navigatedFromScan.value) {
+            navigatedFromScan.value = false;
             return;
         }
+
+        const finalURL = sanitizeURL(scannedDomain);
+        url.value = finalURL;
+        console.log('Watcher updated URL to:', url.value);
+        scanAnalysis(finalURL);
     }
-}, { immediate: true })
+}, { immediate: true });
+
 
 const scanUrl = () => {
     console.log(form.value);
 
     if (!form.value) return;
-    const finalURL = sanitizeURL(url.value);
+    const finalURL = sanitizeURL(url.value.trim());
     url.value = finalURL
     scanAnalysis(finalURL)
 }

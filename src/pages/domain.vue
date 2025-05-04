@@ -13,16 +13,26 @@
         <div class="mx-auto w-100" style="position: fixed; top: 0%; z-index: 99; background-color: #0A192F;">
             <search-bar></search-bar>
         </div>
-
+        <div class="ma-5 mx-sm-10 mx-md-15">
+            <div v-if="loading" class="snap-shot d-flex align-center justify-center">
+                <v-progress-circular indeterminate size="50" color="green" />
+            </div>
+            <div v-else-if="!loading" >
+                <p class="pa-3 text-grey-lighten-1">A snapshot of {{ url }}</p>
+                <div class="snap-shot">
+                    <v-img :src="result?.screenshot" class="fill-parent"></v-img>
+                </div>
+            </div>
+        </div>
         <v-card class="w-100 layout md-nowrap mx-auto bg-transparent pa-5 px-sm-10 px-md-15">
             <div class="preview ">
                 <div class="result bg-primary">
                     <h2 class="text-center scanHead" style="letter-spacing: .2em;">SCAN ANALYSIS</h2>
 
                     <div class="d-flex align-center justify-center mt-8 flex-column">
-                        <div v-if="loading" class="skeleton-transparent score"></div>
-                        <div v-else class="score">
-                            <span style="font-size: 3em; color: #00E676; font-weight: 900;">
+                        <div v-if="loading" class="skeleton-transparent score" :style="{border: `12px solid ${badge.color}`}"></div>
+                        <div v-else class="score" :style="{border: `12px solid ${badge.color}`}">
+                            <span style="font-size: 2.5em; font-weight: 900;" :style="{color: badge.color}">
                                 {{ result?.phishing_detection }}
                             </span>
                             <div style="font-size: 20px;">/10</div>
@@ -38,7 +48,7 @@
                         <strong class="text-h5 font-weight-black">Remark:</strong>
                         <div v-if="loading" class="skeleton-transparent my-3"
                             style="height: 30px; width: 70%; margin: auto;"></div>
-                        <p v-else v-html="result?.comment?.responce"></p>
+                        <p v-else v-html="result?.comment?.responce" class="my-3"></p>
                     </div>
                 </div>
 
@@ -50,16 +60,11 @@
                         type="list-item-two-line"></v-skeleton-loader>
                     <p v-else>{{ result?.domain_age }}</p>
                 </div>
+                <v-divider class="mt-5"></v-divider>
             </div>
 
-            <div class="details w-100">
-                <div v-if="loading" class="snap-shot d-flex align-center justify-center">
-                    <v-progress-circular indeterminate size="50" color="green" />
-                </div>
-                <div v-else-if="!loading" class="snap-shot">
-                    <v-img :src="result?.screenshot" class="fill-parent"></v-img>
-                </div>
-                <v-list dense class="bg-transparent mt-10">
+            <div class="details w-100 px-lg-15">
+                <v-list dense class="bg-transparent mt-5">
                     <template v-if="!loading && description.list">
                         <p>{{ description.text }}</p>
                         <v-list-item v-for="(note, i) in description.list" :key="i" class="px-0 d-flex align-center">
@@ -72,24 +77,34 @@
                     </template>
                     <v-divider class="mt-7"></v-divider>
                 </v-list>
-                <div v-if="!loading && result" class="my-8">
-                    <div class="font-weight-black text-sm-h5">Disclaimer: </div>
-                    <p>
-                        Evaluate every submitted URL. The results and recommendations provided are based on real-time
-                        scrutiny and
-                        data-driven models.
-                        While PhishGuard aims to enhance user safety, users are advised to exercise caution and verify
-                        senders
-                        independently before interacting with any links.
-                        ⚠️ PhishGuard will not be held liable for any loss, damage, or harm resulting from the use of
-                        links analyzed
-                        by this platform, including those marked as safe. Always prioritize secure browsing practices.
-                    </p>
-                </div>
+
             </div>
         </v-card>
-
-        <div class="d-flex w-100 mx-auto align-center justify-space-between px-5 px-sm-10 px-md-15 ga-5 mt-15 mb-5">
+        <div v-if="!loading && result" class="mt-8 pa-5 px-sm-10 px-md-15">
+            <div class="font-weight-black">
+                <small>
+                    Disclaimer:
+                </small>
+            </div>
+            <p>
+                <small>
+                    Evaluate every submitted URL. The results and recommendations provided are based on
+                    real-time
+                    scrutiny and
+                    data-driven models.
+                    While PhishGuard aims to enhance user safety, users are advised to exercise caution and
+                    verify
+                    senders
+                    independently before interacting with any links.
+                    PhishGuard will not be held liable for any loss, damage, or harm resulting from the use
+                    of
+                    links analyzed
+                    by this platform, including those marked as safe. Always prioritize secure browsing
+                    practices.
+                </small>
+            </p>
+        </div>
+        <div class="d-flex w-100 footlayout mx-auto align-center justify-space-between ga-5 mt-5 mb-5">
             <hr class="w-25">
             <small class="text-center">© PhishGuard. Your Security, Our Priority.</small>
             <hr class="w-25">
@@ -106,7 +121,7 @@ import { storeToRefs } from 'pinia';
 
 const router = useRouter();
 const message = useMessagesStore();
-const { result, loading } = storeToRefs(message);
+const { result, loading, url } = storeToRefs(message);
 
 const badge = computed(() => {
     const score = result.value?.phishing_detection;
@@ -115,18 +130,19 @@ const badge = computed(() => {
     } else if (score <= 6) {
         return { text: '🟡 SUSPICIOUS', color: '#FFEB3B' };
     } else if (score <= 10) {
-        return { text: '🔴 DANGEROUS', color: '#F44336' };
+        return { text: '🔴 DANGEROUS', color: '#D32F2F' };
     } else {
         return { text: '', color: '' };
     }
 });
+
 const description = computed(() => {
     const score = result.value?.phishing_detection;
     if (score <= 3) {
         return {
             text: 'This URL has been identified as safe based on the following indicators: ',
             list: result.value?.comment['good traits'],
-            caption: '✅ You may proceed to click this link if it is from a trusted source.'
+            caption: 'You may proceed to click this link if it is from a trusted source.'
         };
     } else if (score <= 6) {
         return {
@@ -136,7 +152,7 @@ const description = computed(() => {
         };
     } else if (score <= 10) {
         return {
-            text: '❌ This URL has been classified as malicious based on multiple high-risk indicators: ',
+            text: 'This URL has been classified as malicious based on multiple high-risk indicators: ',
             list: result.value?.comment['bad traints'],
             caption: '🚫 Do not click on this link, even if it appears to come from a known source. It poses a serious security threat.'
         };
@@ -192,20 +208,22 @@ const description = computed(() => {
     height: 100%;
     object-fit: cover;
 }
+
 .details {
     flex: 1;
 }
+
 .score {
     border: 12px solid #388E3C;
-    height: 220px;
-    width: 50%;
+    height: 150px;
+    width: 150px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     color: lightgrey;
-    line-height: 40px;
+    line-height: 30px;
 }
 
 .badge {
@@ -223,6 +241,8 @@ const description = computed(() => {
     animation: pulse 1.5s infinite;
 }
 
+
+
 @keyframes pulse {
     0% {
         opacity: 0.1;
@@ -237,18 +257,7 @@ const description = computed(() => {
     }
 }
 
-@media (min-width: 1060px) {
-    .preview {
-        width: 400px !important;
-        min-width: 350px !important;
-    }
-}
-@media (min-width: 560px) {
-    .preview {
-        width: 300px;
-        min-width: 250px;
-    }
-}
+
 @media (max-width: 560px) {
     .layout {
         flex-direction: column;
@@ -256,7 +265,7 @@ const description = computed(() => {
 
     .preview,
     .details {
-        width: 100%;
+        width: 100% !important;
     }
 
     .preview {
@@ -266,13 +275,27 @@ const description = computed(() => {
     .snap-shot {
         min-height: 10em;
     }
-    .scanHead{
+
+    .scanHead {
         font-size: 20px;
     }
 }
 
+@media (min-width:560px) {
+    .footlayout {
+        width: 93% !important;
+    }
+}
 
+@media (min-width:760px) {
+    .preview {
+        width: 350px !important;
+    }
+}
 
-
-
+@media (min-width:960px) {
+    .preview {
+        width: 400px !important;
+    }
+}
 </style>

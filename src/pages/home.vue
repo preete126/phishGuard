@@ -8,12 +8,10 @@
             Phishing
             Links</p>
         <v-card class="py-5 px-2 pa-sm-7 w-100 w-md-75">
-            <!-- <v-card-item> -->
             <v-card-title class="text-center mb-2 text-wrap text-subtitle-1 text-sm-h6">Check If a URL is Safe or a
                 Phishing
                 Trap</v-card-title>
             <search-bar></search-bar>
-            <!-- </v-card-item> -->
         </v-card>
     </v-main>
 
@@ -108,21 +106,27 @@
             </ul>
 
         </div>
-        <div class="w-100 layout mx-auto mb-15">
-            <div class="font-weight-black text-sm-h5">Disclaimer: </div>
+        <div class="w-100 layout mx-auto mb-5 mt-15">
+            <div class="font-weight-black">
+                <small>
+                    Disclaimer:
+                </small>
+            </div>
             <p>
-                Evaluate every submitted URL. The results and recommendations provided are based on real-time
-                scrutiny and
-                data-driven models.
-                While PhishGuard aims to enhance user safety, users are advised to exercise caution and verify
-                senders
-                independently before interacting with any links.
-                ⚠️ PhishGuard will not be held liable for any loss, damage, or harm resulting from the use of
-                links analyzed
-                by this platform, including those marked as safe. Always prioritize secure browsing practices.
+                <small>
+                    Evaluate every submitted URL. The results and recommendations provided are based on real-time
+                    scrutiny and
+                    data-driven models.
+                    While PhishGuard aims to enhance user safety, users are advised to exercise caution and verify
+                    senders
+                    independently before interacting with any links.
+                    ⚠️ PhishGuard will not be held liable for any loss, damage, or harm resulting from the use of
+                    links analyzed
+                    by this platform, including those marked as safe. Always prioritize secure browsing practices.
+                </small>
             </p>
         </div>
-        <div class="d-flex w-100 layout mx-auto align-center justify-space-between ga-5 mt-15 mb-5">
+        <div class="d-flex w-100 layout mx-auto align-center justify-space-between ga-5 mt-5 mb-5">
             <hr class="w-25">
             <small class="text-center">© PhishGuard. Your Security, Our Priority.</small>
             <hr class="w-25">
