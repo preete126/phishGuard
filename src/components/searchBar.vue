@@ -17,7 +17,7 @@ const router = useRouter()
 const route = useRoute()
 // const url = ref('')
 const messages = useMessagesStore()
-const { result, url, navigatedFromScan, loading } = storeToRefs(messages)
+const { result, url, navigatedFromScan, loading, queue } = storeToRefs(messages)
 
 
 
@@ -57,9 +57,9 @@ const scanAnalysis = async (finalURL) => {
 
     try {
         loading.value = true
-        const response = await axios.post('https://alaminapi.pythonanywhere.com/Get_Data', { url: finalURL }, {
+        const response = await axios.post('https://malikez.pythonanywhere.com/api/analyze', { url: finalURL }, {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'application/json'
             }
         })
         console.log(response.data);
@@ -67,12 +67,12 @@ const scanAnalysis = async (finalURL) => {
         navigatedFromScan.value = true;
         router.push(`/domain/${encodeURIComponent(finalURL)}`);
     } catch (error) {
-        console.log(error);
-        if (error.status === 500) {
+        console.log(error, error.message);
+        if (error.status) {
             messages.add({ text: "We currently don't have any comments that fit your search", color: 'error' })
             return;
         }
-        messages.add(error.message)
+        messages.add({ text: error.message, color: 'error' })        
     } finally {
         loading.value = false
     }

@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <RouterView></RouterView>
-    <v-snackbar v-model="snackbar" location="top center" :color="queue[0]?.color">
-      {{ queue[0]?.text }}
+    <v-snackbar v-model="snackbar" location="top center" :color="queue[queue.length -1]?.color">
+      {{ queue[queue.length -1]?.text }}
 
       <template v-slot:actions>
         <v-btn icon color="blue" variant="text" @click="messages.close()">

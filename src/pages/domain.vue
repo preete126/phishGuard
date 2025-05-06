@@ -17,10 +17,22 @@
             <div v-if="loading" class="snap-shot d-flex align-center justify-center">
                 <v-progress-circular indeterminate size="50" color="green" />
             </div>
-            <div v-else-if="!loading" >
-                <p class="pa-3 text-grey-lighten-1">A snapshot of {{ url }}</p>
+            <div v-else-if="!loading">
+                <v-tooltip :text="result?.url" location="bottom">
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" variant="plain" class="pa-0"
+                            style=" display: inherit; text-transform: inherit;">
+                            <span
+                                style="display: block; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                A snapshot of: {{
+                                    result?.url }}
+                            </span>
+                        </v-btn>
+                    </template>
+                </v-tooltip>
                 <div class="snap-shot">
-                    <v-img :src="result?.screenshot" class="fill-parent"></v-img>
+                    <v-img :src="`data:image/png;base64,${result?.report.screenshot.screenshot_base64}`"
+                        class="fill-parent"></v-img>
                 </div>
             </div>
         </div>
@@ -29,11 +41,13 @@
                 <div class="result bg-primary">
                     <h2 class="text-center scanHead" style="letter-spacing: .2em;">SCAN ANALYSIS</h2>
 
-                    <div class="d-flex align-center justify-center mt-8 flex-column">
-                        <div v-if="loading" class="skeleton-transparent score" :style="{border: `12px solid ${badge.color}`}"></div>
-                        <div v-else class="score" :style="{border: `12px solid ${badge.color}`}">
-                            <span style="font-size: 2.5em; font-weight: 900;" :style="{color: badge.color}">
-                                {{ result?.phishing_detection }}
+                    <div class="d-flex align-center justify-center mt-8 mb-4 flex-column">
+                        <div v-if="loading" class="skeleton-transparent score"
+                            :style="{ border: `12px solid ${badge.color}` }">
+                        </div>
+                        <div v-else class="score" :style="{ border: `12px solid ${badge.color}` }">
+                            <span style="font-size: 2.5em; font-weight: 900;" :style="{ color: badge.color }">
+                                {{ result?.report.score }}
                             </span>
                             <div style="font-size: 20px;">/10</div>
                         </div>
@@ -44,21 +58,128 @@
                         <div v-else class="skeleton-transparent badge mt-4" style="width: 120px; height: 40px;"></div>
                     </div>
 
-                    <div class="text-center mt-5 font-weight-black">
-                        <strong class="text-h5 font-weight-black">Remark:</strong>
-                        <div v-if="loading" class="skeleton-transparent my-3"
-                            style="height: 30px; width: 70%; margin: auto;"></div>
-                        <p v-else v-html="result?.comment?.responce" class="my-3"></p>
-                    </div>
                 </div>
+                <v-divider class="my-5"></v-divider>
+                <div>
+                    <h3 class="text-h6 font-weight-bold mb-2">🔒 SSL Certificate Details</h3>
+                    <v-skeleton-loader v-if="loading" class="bg-transparent"
+                        type="list-item-two-line"></v-skeleton-loader>
+                    <p v-else>
+                    <div v-if="result.report.ssl_info.details">
+                        <div>
+                            <v-tooltip :text="result?.report.ssl_info.details.issuer.commonName" location="bottom">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn v-bind="props" variant="plain" class="pa-0" style=" display: inherit;">
+                                        <span
+                                            style="display: block; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            Issuer: {{ result?.report.ssl_info.details.issuer.commonName }}
+                                        </span>
+                                    </v-btn>
+                                </template>
+                            </v-tooltip>
+                        </div>
+                        <div>
+                            <v-tooltip :text="result?.report.ssl_info.details.issuer.countryName" location="bottom">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn v-bind="props" variant="plain" class="pa-0" style=" display: inherit;">
+                                        <span
+                                            style="display: block; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            Country: {{ result?.report.ssl_info.details.issuer.countryName }}
+                                        </span>
+                                    </v-btn>
+                                </template>
+                            </v-tooltip>
+                        </div>
+                        <div>
+                            <v-tooltip :text="result?.report.ssl_info.details.issuer.organizationName" location="bottom">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn v-bind="props" variant="plain" class="pa-0" style=" display: inherit;">
+                                        <span
+                                            style="display: block; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            Organization: {{ result?.report.ssl_info.details.issuer.organizationName }}
+                                        </span>
+                                    </v-btn>
+                                </template>
+                            </v-tooltip>
+                        </div>
+                        <div>
+                            <v-tooltip :text="result?.report.ssl_info.details.notBefore" location="bottom">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn v-bind="props" variant="plain" class="pa-0" style=" display: inherit;">
+                                        <span
+                                            style="display: block; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            Valid From: {{ result?.report.ssl_info.details.notBefore }}
+                                        </span>
+                                    </v-btn>
+                                </template>
+                            </v-tooltip>
+                        </div>
 
+                        <div>
+                            <v-tooltip :text="result?.report.ssl_info.details.notAfter" location="bottom">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn v-bind="props" variant="plain" class="pa-0" style=" display: inherit;">
+                                        <span
+                                            style="display: block; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            Valid Until: {{ result?.report.ssl_info.details.notAfter }}
+                                        </span>
+                                    </v-btn>
+                                </template>
+                            </v-tooltip>
+                        </div>
+                        <div>
+                            <v-tooltip :text="result?.report.ssl_info.details.serialNumber" location="bottom">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn v-bind="props" variant="plain" class="pa-0" style=" display: inherit;">
+                                        <span
+                                            style="display: block; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            Serial Number: {{ result?.report.ssl_info.details.serialNumber }}
+                                        </span>
+                                    </v-btn>
+                                </template>
+                            </v-tooltip>
+                        </div>
+                    </div>
+                    <div v-else>
+                        SSL check failed.
+                    </div>
+                    </p>
+                </div>
                 <v-divider class="my-5"></v-divider>
 
                 <div>
                     <h3 class="text-h6 font-weight-bold mb-2">🌐 Domain Information</h3>
                     <v-skeleton-loader v-if="loading" class="bg-transparent"
                         type="list-item-two-line"></v-skeleton-loader>
-                    <p v-else>{{ result?.domain_age }}</p>
+                    <p v-else>Domain age: {{ result?.report.domain_age.age }} days</p>
+                </div>
+                <v-divider class="my-5"></v-divider>
+                <div>
+                    <h3 class="text-h6 font-weight-bold mb-2">🔑 Hashes</h3>
+                    <v-skeleton-loader v-if="loading" class="bg-transparent"
+                        type="list-item-two-line"></v-skeleton-loader>
+                    <p v-else>
+                        <v-tooltip :text="result?.report.hashes.md5" location="bottom">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" variant="plain" class="pa-0" style=" display: inherit;">
+                                    <span
+                                        style="display: block; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        MD5: {{ result?.report.hashes.md5 }}
+                                    </span>
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
+                        <v-tooltip :text="result?.report.hashes.sha256" location="bottom">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" variant="plain" class="pa-0" style=" display: inherit;">
+                                    <span
+                                        style="display: block; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        SHA256: {{ result?.report.hashes.sha256 }}
+                                    </span>
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
+                    </p>
                 </div>
                 <v-divider class="mt-5"></v-divider>
             </div>
@@ -68,7 +189,7 @@
                     <template v-if="!loading && description.list">
                         <p>{{ description.text }}</p>
                         <v-list-item v-for="(note, i) in description.list" :key="i" class="px-0 d-flex align-center">
-                            <span>{{ note }}</span>
+                            <span>{{ description.bullet }} {{ note }}</span>
                         </v-list-item>
                         <p>{{ description.caption }}</p>
                     </template>
@@ -124,36 +245,39 @@ const message = useMessagesStore();
 const { result, loading, url } = storeToRefs(message);
 
 const badge = computed(() => {
-    const score = result.value?.phishing_detection;
+    const score = result.value?.report.score;
     if (score <= 3) {
-        return { text: '🟢 SAFE', color: '#4CAF50' };
+        return { text: `🟢 ${result.value?.report.risk_level}`, color: '#4CAF50' };
     } else if (score <= 6) {
-        return { text: '🟡 SUSPICIOUS', color: '#FFEB3B' };
+        return { text: `🟡 ${result.value?.report.risk_level}`, color: '#FFEB3B' };
     } else if (score <= 10) {
-        return { text: '🔴 DANGEROUS', color: '#D32F2F' };
+        return { text: `🔴 ${result.value?.report.risk_level}`, color: '#D32F2F' };
     } else {
         return { text: '', color: '' };
     }
 });
 
 const description = computed(() => {
-    const score = result.value?.phishing_detection;
+    const score = result.value?.report.score;
     if (score <= 3) {
         return {
             text: 'This URL has been identified as safe based on the following indicators: ',
-            list: result.value?.comment['good traits'],
+            list: result.value?.report.good_traits,
+            bullet: '✅',
             caption: 'You may proceed to click this link if it is from a trusted source.'
         };
     } else if (score <= 6) {
         return {
             text: 'This URL has been flagged as suspicious due to the following risk factors:',
-            list: result.value?.comment['bad traints'],
+            list: result.value?.report.bad_traits,
+            bullet: '❌',
             caption: '⚠️Only click this link if you are certain about the source. Proceed with caution.'
         };
     } else if (score <= 10) {
         return {
             text: 'This URL has been classified as malicious based on multiple high-risk indicators: ',
-            list: result.value?.comment['bad traints'],
+            list: result.value?.report.bad_traits,
+            bullet: '❌',
             caption: '🚫 Do not click on this link, even if it appears to come from a known source. It poses a serious security threat.'
         };
     } else {
