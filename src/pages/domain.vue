@@ -32,7 +32,7 @@
                 </v-tooltip>
                 <div class="snap-shot">
                     <v-img :src="`data:image/png;base64,${result?.report.screenshot.screenshot_base64}`"
-                        class="fill-parent"></v-img>
+                        class="fill-parent" cover style="object-position: top center !important;"></v-img>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
                 <div class="result bg-primary">
                     <h2 class="text-center scanHead" style="letter-spacing: .2em;">SCAN ANALYSIS</h2>
 
-                    <div class="d-flex align-center justify-center mt-8 mb-4 flex-column">
+                    <div class="d-flex align-center justify-center my-8 flex-column">
                         <div v-if="loading" class="skeleton-transparent score"
                             :style="{ border: `12px solid ${badge.color}` }">
                         </div>
@@ -57,11 +57,19 @@
                         </div>
                         <div v-else class="skeleton-transparent badge mt-4" style="width: 120px; height: 40px;"></div>
                     </div>
-
+                    <v-divider class="my-5"></v-divider>
+                    <div v-if="!loading && result">
+                        <h3 class="text-sm-h6 font-weight-bold mb-4">🧠 Reasons Behind Prediction:</h3>
+                        <v-list-item v-for="(points, i) in result.report.reasons" :key="i" class="px-0">
+                            <div class="pb-3 d-flex ga-3 align-center">
+                                <span class="text-h6">◦</span> <span>{{ points }} </span>
+                            </div>
+                        </v-list-item>
+                    </div>
                 </div>
                 <v-divider class="my-5"></v-divider>
                 <div>
-                    <h3 class="text-h6 font-weight-bold mb-2">🔒 SSL Certificate Details</h3>
+                    <h3 class="text-sm-h6 font-weight-bold mb-2">🔒 SSL Certificate Details</h3>
                     <v-skeleton-loader v-if="loading" class="bg-transparent"
                         type="list-item-two-line"></v-skeleton-loader>
                     <p v-else>
@@ -91,7 +99,8 @@
                             </v-tooltip>
                         </div>
                         <div>
-                            <v-tooltip :text="result?.report.ssl_info.details.issuer.organizationName" location="bottom">
+                            <v-tooltip :text="result?.report.ssl_info.details.issuer.organizationName"
+                                location="bottom">
                                 <template v-slot:activator="{ props }">
                                     <v-btn v-bind="props" variant="plain" class="pa-0" style=" display: inherit;">
                                         <span
@@ -148,14 +157,14 @@
                 <v-divider class="my-5"></v-divider>
 
                 <div>
-                    <h3 class="text-h6 font-weight-bold mb-2">🌐 Domain Information</h3>
+                    <h3 class="text-sm-h6 font-weight-bold mb-2">🌐 Domain Information</h3>
                     <v-skeleton-loader v-if="loading" class="bg-transparent"
                         type="list-item-two-line"></v-skeleton-loader>
                     <p v-else>Domain age: {{ result?.report.domain_age.age }} days</p>
                 </div>
                 <v-divider class="my-5"></v-divider>
                 <div>
-                    <h3 class="text-h6 font-weight-bold mb-2">🔑 Hashes</h3>
+                    <h3 class="text-sm-h6 font-weight-bold mb-2">🔑 Hashes</h3>
                     <v-skeleton-loader v-if="loading" class="bg-transparent"
                         type="list-item-two-line"></v-skeleton-loader>
                     <p v-else>
@@ -235,14 +244,12 @@
 
 <script setup>
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
 import searchBar from '@/components/searchBar.vue';
 import { useMessagesStore } from '@/utils/states';
 import { storeToRefs } from 'pinia';
 
-const router = useRouter();
 const message = useMessagesStore();
-const { result, loading, url } = storeToRefs(message);
+const { result, loading } = storeToRefs(message);
 
 const badge = computed(() => {
     const score = result.value?.report.score;
@@ -319,7 +326,6 @@ const description = computed(() => {
 
 .snap-shot {
     width: 100%;
-    min-height: 10em;
     background-color: rgba(0, 0, 0, 0.5);
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -328,9 +334,12 @@ const description = computed(() => {
 }
 
 .fill-parent {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.fill-parent ::v-deep(img) {
+    object-position: top center !important;
 }
 
 .details {
@@ -397,7 +406,7 @@ const description = computed(() => {
     }
 
     .snap-shot {
-        min-height: 10em;
+        height: 20em;
     }
 
     .scanHead {
@@ -415,11 +424,19 @@ const description = computed(() => {
     .preview {
         width: 350px !important;
     }
+
+    .snap-shot {
+        height: 40em;
+    }
 }
 
 @media (min-width:960px) {
     .preview {
         width: 400px !important;
+    }
+
+    .snap-shot {
+        height: 60em;
     }
 }
 </style>

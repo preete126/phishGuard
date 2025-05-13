@@ -10,14 +10,13 @@
 import { useMessagesStore } from '@/utils/states';
 import axios from 'axios';
 import { storeToRefs } from 'pinia';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 const form = ref(false)
 const router = useRouter()
 const route = useRoute()
-// const url = ref('')
 const messages = useMessagesStore()
-const { result, url, navigatedFromScan, loading, queue } = storeToRefs(messages)
+const { result, url, navigatedFromScan, loading} = storeToRefs(messages)
 
 
 
@@ -62,12 +61,10 @@ const scanAnalysis = async (finalURL) => {
                 'Content-Type': 'application/json'
             }
         })
-        console.log(response.data);
         result.value = response.data;
         navigatedFromScan.value = true;
         router.push(`/domain/${encodeURIComponent(finalURL)}`);
     } catch (error) {
-        console.log(error, error.message);
         if (error.status) {
             messages.add({ text: "We currently don't have any comments that fit your search", color: 'error' })
             return;
@@ -77,11 +74,6 @@ const scanAnalysis = async (finalURL) => {
         loading.value = false
     }
 }
-onMounted(() => {
-
-    console.log(url.value);
-
-})
 watch(() => route.fullPath, (newpath) => {
     const segments = newpath.split('/');
     const domainIndex = segments.indexOf('domain');
@@ -93,20 +85,16 @@ watch(() => route.fullPath, (newpath) => {
             navigatedFromScan.value = false;
             return;
         }
-
         const finalURL = sanitizeURL(scannedDomain);
         url.value = finalURL;
-        console.log('Watcher updated URL to:', url.value);
         scanAnalysis(finalURL);
     }
 }, { immediate: true });
 
 
 const scanUrl = () => {
-    console.log(form.value);
-
     if (!form.value) return;
-    const finalURL = sanitizeURL(url.value.trim());
+    const finalURL = sanitizeURL(url.value);
     url.value = finalURL
     scanAnalysis(finalURL)
 }
